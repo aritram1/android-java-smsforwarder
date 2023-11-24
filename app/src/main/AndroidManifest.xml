@@ -31,21 +31,5 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-        <service
-            android:name=".SMSForwarderService"
-            android:enabled="true"
-            android:exported="false">
-        </service>
-
-<!--        <service-->
-<!--            android:name=".SMSForwarderServiceForeground"-->
-<!--            android:enabled="true"-->
-<!--            android:exported="false">-->
-<!--            &lt;!&ndash; Add the BIND_JOB_SERVICE permission for Android 8.0 and above &ndash;&gt;-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
-<!--            </intent-filter>-->
-<!--        </service>-->
     </application>
-
 </manifest>

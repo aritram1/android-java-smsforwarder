@@ -2,6 +2,7 @@ package com.example.smsforwarderservice;
 
 import android.os.AsyncTask;
 import android.os.Build;
+import android.telephony.SmsManager;
 import android.util.Log;
 import org.json.JSONObject;
 import java.io.BufferedReader;
@@ -127,9 +128,11 @@ public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
             String deviceName = Build.MODEL.startsWith(Build.MANUFACTURER)
                                     ? Build.MODEL
                                     : (Build.MANUFACTURER) + "-" + Build.MODEL;
+            String createdFrom = "SMS";
 
             Log.d(TAG, "sender=" + sender);
             Log.d(TAG, "content=" + content);
+            Log.d(TAG, "createdFrom=" + createdFrom);
             Log.d(TAG, "receivedAt=" + receivedAt);
             Log.d(TAG, "deviceName=" + deviceName);
 
@@ -137,6 +140,7 @@ public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
                     + "\"FinPlan__Sender__c\":\"" + sender + "\","
                     + "\"FinPlan__Content__c\":\"" + content + "\","
                     + "\"FinPlan__Device__c\":\"" + deviceName + "\","
+                    + "\"FinPlan__Created_From__c\":\"" + createdFrom + "\","
                     + "\"FinPlan__Received_At__c\":\"" + receivedAt + "\""
                     + "}";
 
@@ -178,6 +182,7 @@ public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
 
             // Close the connection
             connection.disconnect();
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "Exception during Salesforce API callout: " + e.getMessage());

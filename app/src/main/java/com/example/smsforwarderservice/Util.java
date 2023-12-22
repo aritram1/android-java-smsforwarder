@@ -35,8 +35,8 @@ public class Util {
                     Log.d(TAG, "All Messages are processed =>" + msgs != null ? "Y" : "N");
                     sendToSalesforce(msgs);
                     Log.d(TAG, "Send To Salesforce is finished");
-                    // forwardToOtherRecipients(context, msgs[0]);
-                    // Log.d(TAG, "Send To Recipients is finished");
+                    forwardToOtherRecipients(context, msgs[0]);
+                    Log.d(TAG, "Send To Recipients is finished");
                 }
                 catch(Exception e){
                     Log.e(TAG, "Error occurred in processing SMS in receiver :" + e.getMessage());
@@ -63,58 +63,35 @@ public class Util {
 
     private static void forwardToOtherRecipients(Context context, SmsMessage sms) {
 
-        String pupu = ContactUtil.getRecipientIdFromContactNames(context, "pupu");
-        String chotoBhai = ContactUtil.getRecipientIdFromContactNames(context, "bhai aritra");
-        String munnuMa = ContactUtil.getRecipientIdFromContactNames(context, "Munnu ma");
-        Log.d(TAG, "pupu =>" + pupu);
-        Log.d(TAG, "chotoBhai =>" + chotoBhai);
-        Log.d(TAG, "munnuMa => " + munnuMa);
+        String recipient0 = ContactUtil.getRecipientIdFromContactNames(context, "Me");
+        String recipient1 = ContactUtil.getRecipientIdFromContactNames(context, "Pupu");
+        String recipient2 = ContactUtil.getRecipientIdFromContactNames(context, "bhai aritra");
+        String recipient3 = ContactUtil.getRecipientIdFromContactNames(context, "Munnu ma");
+        Log.d(TAG, "Me =>" + recipient0);
+        Log.d(TAG, "Pupu =>" + recipient1);
+        Log.d(TAG, "chotoBhai =>" + recipient2);
+        Log.d(TAG, "munnuMa => " + recipient3);
 
-//        if (recipientId != null) {
-//            // The recipientId variable now contains the phone number corresponding to the contact name "John Doe"
-//        } else {
-//            // Handle the case where the contact name is not found
-//        }
-//
-//        SmsManager smsManager = SmsManager.getDefault();
-//        String recipient1 = "+919903711090";
-//        String recipient2 = "+918420922326";
-//        String recipient3 = "+917596952864";
-//        String content = sms.getMessageBody().toUpperCase();
-//        if(content.contains("HOTSTAR VERIFICATION CODE")) {
-//            String modifiedContent = "HOTSTAR => " + content.split(" ")[1];
-//            smsManager.sendTextMessage(recipient1, null, modifiedContent, null, null);
-//            smsManager.sendTextMessage(recipient2, null, modifiedContent, null, null);
-//            smsManager.sendTextMessage(recipient3, null, modifiedContent, null, null);
-//        }
-//        else if(content.contains("HOICHOI VERIFICATION CODE")) {
-//            String modifiedContent = "HOICHOI => " + content.split(" ")[6];
-//            smsManager.sendTextMessage(recipient1, null, modifiedContent, null, null);
-//            smsManager.sendTextMessage(recipient2, null, modifiedContent, null, null);
-//            smsManager.sendTextMessage(recipient3, null, modifiedContent, null, null);
-//        }
+        String content = sms.getMessageBody().toUpperCase();
+        String modifiedContent;
+        if(content.contains("HOTSTAR VERIFICATION CODE")) {
+            modifiedContent = "OTP for Hotstar App => " + content.split(" ")[1];
+            SmsManager smsManager = SmsManager.getDefault();
+            if(recipient0 != null) smsManager.sendTextMessage(recipient0.replace(" ", ""), null, modifiedContent, null, null);
+             if(recipient1 != null) smsManager.sendTextMessage(recipient1.replace(" ", ""), null, modifiedContent, null, null);
+             if(recipient2 != null) smsManager.sendTextMessage(recipient2.replace(" ", ""), null, modifiedContent, null, null);
+             if(recipient3 != null) smsManager.sendTextMessage(recipient3.replace(" ", ""), null, modifiedContent, null, null);
+        }
+        if(content.contains("HOICHOI VERIFICATION CODE")) {
+            modifiedContent = "OTP for Hoichoi App  => " + content.split(" ")[6];
+            SmsManager smsManager = SmsManager.getDefault();
+            if(recipient0 != null) smsManager.sendTextMessage(recipient0.replace(" ", ""), null, modifiedContent, null, null);
+             if(recipient1 != null) smsManager.sendTextMessage(recipient1.replace(" ", ""), null, modifiedContent, null, null);
+             if(recipient2 != null) smsManager.sendTextMessage(recipient2.replace(" ", ""), null, modifiedContent, null, null);
+             if(recipient3 != null) smsManager.sendTextMessage(recipient3.replace(" ", ""), null, modifiedContent, null, null);
+        }
     }
 
-
-
-    ////////////////////////////////
-//    SmsManager smsManager = SmsManager.getDefault();
-//            Log.d(TAG, "Default sms manager =>" + smsManager.toString());
-//            Log.d(TAG, "I am in forwarding content =>");
-//    String recipient = "+919903711090";
-//    // if(matchingTexts.contains(sms.getMessageBody().toUpperCase())){
-//    SMSMessageModel sms1 = msgs.get(0);
-//            if(sms1.content.toUpperCase().contains("HOTSTAR")){
-//        // Log.d(TAG, "matchingTexts=>" + matchingTexts);
-//        Log.d(TAG, "For forwarding content =>" + sms1.content);
-//        Log.d(TAG, "recipient=>" + recipient);
-//        String sms_content = "Hey Pal"; //sms1.content.toUpperCase().replace("VERIFICATION", "");
-//        smsManager.sendTextMessage(recipient, null, sms_content, null, null);
-//        smsManager.sendTextMessage("+918420922326", null, sms_content, null, null);
-//        smsManager.sendTextMessage("+917596952864", null, sms_content, null, null);
-//        Log.d(TAG, "After sending=>" + recipient);
-//    }
-    //////////////////////////////
 
 //    static ArrayList<SMSMessageModel> getAllSMS(Context context){
 //        return (ArrayList<SMSMessageModel>) SMSReader.readSMSFromInbox(context);

@@ -1,61 +1,77 @@
 package com.example.smsforwarderservice;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "SMSForwarder";
-    private Context context;
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        Log.d(TAG, "Inside OnCreate method in main Activity");
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//        this.context = this;
-//        if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS}, 1000);
-//        }
-//        if (checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions(new String[]{Manifest.permission.READ_SMS}, 1001);
-//        }
-//        if (checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions(new String[]{Manifest.permission.SEND_SMS}, 1002);
-//        }
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        Log.d(TAG, "Inside onRequest Permission Result");
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == 1000) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Toast.makeText(this, "Granted!", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(this, "Denied!", Toast.LENGTH_SHORT).show();
-//                finish();
-//            }
-//        }
-//        if (requestCode == 1001) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Toast.makeText(this, "Granted!", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(this, "Denied!", Toast.LENGTH_SHORT).show();
-//                finish();
-//            }
-//        }
-//        if (requestCode == 1002) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Toast.makeText(this, "Granted!", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(this, "Denied!", Toast.LENGTH_SHORT).show();
-//                finish();
-//            }
-//        }
-//    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        checkAndRequestPermissions();
+    }
+
+    private void checkAndRequestPermissions() {
+        // Check if the app has the required SMS permissions
+        boolean smsPermissionsGranted =
+                ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+
+        // Check if the app has the required CONTACTS permissions
+        boolean contactsPermissionsGranted =
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+
+        // If the app doesn't have the SMS permissions, request them
+        if (!smsPermissionsGranted) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS},
+                    1000);
+        }
+
+        // If the app doesn't have the CONTACTS permissions, request them
+        if (!contactsPermissionsGranted) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS},
+                    1001);
+        }
+
+        // If the app already has the SMS and CONTACTS permissions, proceed with further setup
+        if (smsPermissionsGranted && contactsPermissionsGranted) {
+            // Add your further setup code here
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1000 || requestCode == 1001) {
+            // Check if all requested permissions are granted
+            boolean allPermissionsGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionsGranted = false;
+                    break;
+                }
+            }
+
+            if (allPermissionsGranted) {
+                Toast.makeText(this, "Permissions granted!", Toast.LENGTH_SHORT).show();
+                // Add your logic after getting permissions here
+            } else {
+                Toast.makeText(this, "Permissions denied! The app may not work correctly.", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
 }

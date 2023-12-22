@@ -1,14 +1,22 @@
 package com.example.smsforwarderservice;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Util {
     private static final String TAG = "SMSForwarder";
+
     public static void processSMSReceivedIntent(Context context, Intent intent){
         if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")){
             Log.d(TAG, "SMS/Intent received");
@@ -43,8 +51,20 @@ public class Util {
 
     private static void sendToSalesforce(SmsMessage[] msgs) {
         if(msgs != null) {
-            new SFUtil().execute(msgs);
+            ArrayList<SMSMessageModel> sms_msgs = new ArrayList<SMSMessageModel>();
+            for(SmsMessage sms : msgs){
+                SMSMessageModel eachSMS = new SMSMessageModel();
+                eachSMS.content = sms.getMessageBody();
+                eachSMS.receivedAt = String.valueOf(sms.getTimestampMillis());
+                eachSMS.sender = sms.getOriginatingAddress();
+                sms_msgs.add(eachSMS);
+            }
+            new SFUtil().execute(sms_msgs);
         }
+    }
+
+    static ArrayList<SMSMessageModel> getAllSMS(Context context){
+        return (ArrayList<SMSMessageModel>) SMSReader.readSMSFromInbox(context);
     }
 }
 

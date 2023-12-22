@@ -16,7 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class SFUtil extends AsyncTask<SmsMessage[], Void, Void> {
+public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
 
     private static final String TAG = "SMSForwarder";
     private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
@@ -41,7 +41,7 @@ public class SFUtil extends AsyncTask<SmsMessage[], Void, Void> {
     public SalesforceResponse sf_response;
 
     @Override
-    protected Void doInBackground(SmsMessage[]... params) {
+    protected Void doInBackground(ArrayList<SMSMessageModel>... params) {
         if (sf_response == null || sf_response.accessToken == null) loginToSalesforce();
         try{
             saveToSalesforce(params[0]);
@@ -53,7 +53,7 @@ public class SFUtil extends AsyncTask<SmsMessage[], Void, Void> {
         return null;
     }
 
-    private void loginToSalesforce() {
+    void loginToSalesforce() {
         HttpURLConnection connection = null;
         try {
             String urlString = TOKEN_ENDPOINT + "?" +
@@ -110,7 +110,7 @@ public class SFUtil extends AsyncTask<SmsMessage[], Void, Void> {
         }
     }
 
-    private void saveToSalesforce(SmsMessage[] msgs) {
+    void saveToSalesforce(ArrayList<SMSMessageModel> msgs) {
         Log.d(TAG, "Save to Salesforce method starts with token : " + sf_response.accessToken);
         try {
             Log.d(TAG, "Inside try block for save to salesforce");
@@ -124,11 +124,12 @@ public class SFUtil extends AsyncTask<SmsMessage[], Void, Void> {
             //connection.setRequestProperty("Accept", "application/json");
             connection.setDoOutput(true); // Enable input and output streams
 
-            String sender = msgs[0].getOriginatingAddress();
-            String content = msgs[0].getMessageBody().length() < 255
-                                    ? msgs[0].getMessageBody()
-                                    : msgs[0].getMessageBody().substring(0, 255);
-            String receivedAt = String.valueOf(msgs[0].getTimestampMillis());
+            SMSMessageModel sms = msgs.get(0);
+            String sender = sms.sender;//getOriginatingAddress();
+            String content = sms.content.length() < 255
+                                    ? sms.content
+                                    : sms.content.substring(0, 255);
+            String receivedAt = String.valueOf(sms.receivedAt);
             String deviceName = Build.MODEL.startsWith(Build.MANUFACTURER)
                                     ? Build.MODEL
                                     : (Build.MANUFACTURER) + "-" + Build.MODEL;

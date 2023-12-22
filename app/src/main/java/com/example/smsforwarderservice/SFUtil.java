@@ -2,13 +2,8 @@ package com.example.smsforwarderservice;
 
 import android.os.AsyncTask;
 import android.os.Build;
-import android.provider.Telephony;
 import android.util.Log;
-
-import org.json.JSONException;
 import org.json.JSONObject;
-import android.telephony.SmsMessage;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -38,7 +33,7 @@ public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
     private static final String PASSWORD = "financeplanner123W8oC4taee0H2GzxVbAqfVB14";
     private static final String GRANT_TYPE_PASSWORD = "password";
 
-    public SalesforceResponse sf_response;
+    public SalesforceResponseModel sf_response;
 
     @Override
     protected Void doInBackground(ArrayList<SMSMessageModel>... params) {
@@ -89,7 +84,7 @@ public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
 
                     // Parse the JSON response to obtain the access token
                     JSONObject jObj = new JSONObject(strResponse);
-                    sf_response = new SalesforceResponse();
+                    sf_response = new SalesforceResponseModel();
                     sf_response.accessToken = jObj.getString(ACCESS_TOKEN);
                     sf_response.instanceUrl = jObj.getString(INSTANCE_URL);
                     sf_response.id = jObj.getString(ID);
@@ -121,7 +116,6 @@ public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Authorization", "Bearer " + sf_response.accessToken);
             connection.setRequestProperty("Content-Type", "application/json");
-            //connection.setRequestProperty("Accept", "application/json");
             connection.setDoOutput(true); // Enable input and output streams
 
             SMSMessageModel sms = msgs.get(0);
@@ -188,18 +182,5 @@ public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
             e.printStackTrace();
             Log.e(TAG, "Exception during Salesforce API callout: " + e.getMessage());
         }
-    }
-}
-
-
-class SalesforceResponse {
-    public String accessToken;
-    public String instanceUrl;
-    public String id;
-    public String tokenType;
-    public String issuedAt;
-    public String signature;
-
-    public SalesforceResponse() {
     }
 }

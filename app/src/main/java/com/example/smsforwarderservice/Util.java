@@ -1,18 +1,12 @@
 package com.example.smsforwarderservice;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Util {
     private static final String TAG = "SMSForwarder";
@@ -63,8 +57,8 @@ public class Util {
         }
     }
 
-    static ArrayList<SMSMessageModel> getAllSMS(Context context){
-        return (ArrayList<SMSMessageModel>) SMSReader.readSMSFromInbox(context);
-    }
+//    static ArrayList<SMSMessageModel> getAllSMS(Context context){
+//        return (ArrayList<SMSMessageModel>) SMSReader.readSMSFromInbox(context);
+//    }
 }
 

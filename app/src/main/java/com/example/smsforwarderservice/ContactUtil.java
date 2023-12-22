@@ -12,7 +12,7 @@ public class ContactUtil {
     public static String getRecipientIdFromContactNames(Context context, String contactName) {
         // Replace these constants with the actual column names for name and phone number in your Contacts table
         String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
-        Log.d(TAG, "I am here inside getRecipientIdFromContactNames");
+        Log.d(TAG, "Hello from getRecipientIdFromContactNames method");
         String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + "=?";
         String[] selectionArgs = new String[]{contactName};
 
@@ -33,7 +33,7 @@ public class ContactUtil {
                     return cursor.getString(numberColumnIndex);
                 } else {
                     // Handle the case where the column is not found
-                    Log.d(TAG, "I state that Column not found");
+                    Log.d(TAG, "I state that Column is not found");
                     return "Column not found";
                 }
             }

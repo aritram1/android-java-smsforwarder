@@ -8,6 +8,8 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 public class Util {
@@ -63,38 +65,30 @@ public class Util {
 
     private static void forwardToOtherRecipients(Context context, SmsMessage sms) {
 
-        String recipient0 = ContactUtil.getRecipientIdFromContactNames(context, "Me");
-        String recipient1 = ContactUtil.getRecipientIdFromContactNames(context, "Pupu");
-        String recipient2 = ContactUtil.getRecipientIdFromContactNames(context, "bhai aritra");
-        String recipient3 = ContactUtil.getRecipientIdFromContactNames(context, "Munnu ma");
-        Log.d(TAG, "Me =>" + recipient0);
-        Log.d(TAG, "Pupu =>" + recipient1);
-        Log.d(TAG, "chotoBhai =>" + recipient2);
-        Log.d(TAG, "munnuMa => " + recipient3);
+        List<String> recipients = Arrays.asList("Me", "Pupu", "bhai aritra", "Munnu ma");
+        SmsManager smsManager = SmsManager.getDefault();
 
-        String content = sms.getMessageBody().toUpperCase();
-        String modifiedContent;
-        if(content.contains("HOTSTAR VERIFICATION CODE")) {
-            modifiedContent = "OTP for Hotstar App => " + content.split(" ")[1];
-            SmsManager smsManager = SmsManager.getDefault();
-            if(recipient0 != null) smsManager.sendTextMessage(recipient0.replace(" ", ""), null, modifiedContent, null, null);
-             if(recipient1 != null) smsManager.sendTextMessage(recipient1.replace(" ", ""), null, modifiedContent, null, null);
-             if(recipient2 != null) smsManager.sendTextMessage(recipient2.replace(" ", ""), null, modifiedContent, null, null);
-             if(recipient3 != null) smsManager.sendTextMessage(recipient3.replace(" ", ""), null, modifiedContent, null, null);
-        }
-        if(content.contains("HOICHOI VERIFICATION CODE")) {
-            modifiedContent = "OTP for Hoichoi App  => " + content.split(" ")[6];
-            SmsManager smsManager = SmsManager.getDefault();
-            if(recipient0 != null) smsManager.sendTextMessage(recipient0.replace(" ", ""), null, modifiedContent, null, null);
-             if(recipient1 != null) smsManager.sendTextMessage(recipient1.replace(" ", ""), null, modifiedContent, null, null);
-             if(recipient2 != null) smsManager.sendTextMessage(recipient2.replace(" ", ""), null, modifiedContent, null, null);
-             if(recipient3 != null) smsManager.sendTextMessage(recipient3.replace(" ", ""), null, modifiedContent, null, null);
+        for (String recipient : recipients){
+            String recipientNumber = ContactUtil.getRecipientIdFromContactNames(context, recipient);
+            Log.d(TAG, recipient + " => " + recipientNumber);
+
+            String content = sms.getMessageBody().toUpperCase();
+            String modifiedContent = null;
+            if(content.contains("HOTSTAR VERIFICATION CODE")) {
+                modifiedContent = "OTP for Hotstar App => " + content.split(" ")[1];
+            }
+            if(content.contains("HOICHOI VERIFICATION CODE")) {
+                modifiedContent = "OTP for Hoichoi App  => " + content.split(" ")[6];
+            }
+            if(recipientNumber != null && modifiedContent != null){
+                smsManager.sendTextMessage(recipientNumber.replace(" ", ""), null, modifiedContent, null, null);
+            }
         }
     }
-
 
 //    static ArrayList<SMSMessageModel> getAllSMS(Context context){
 //        return (ArrayList<SMSMessageModel>) SMSReader.readSMSFromInbox(context);
 //    }
+
 }
 

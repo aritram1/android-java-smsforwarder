@@ -35,8 +35,8 @@ public class Util {
                     Log.d(TAG, "All Messages are processed =>" + msgs != null ? "Y" : "N");
                     sendToSalesforce(msgs);
                     Log.d(TAG, "Send To Salesforce is finished");
-                    forwardToOtherRecipients(context, msgs[0]);
-                    Log.d(TAG, "Send To Recipients is finished");
+                    // forwardToOtherRecipients(context, msgs[0]);
+                    // Log.d(TAG, "Send To Recipients is finished");
                 }
                 catch(Exception e){
                     Log.e(TAG, "Error occurred in processing SMS in receiver :" + e.getMessage());
@@ -66,9 +66,9 @@ public class Util {
         String pupu = ContactUtil.getRecipientIdFromContactNames(context, "pupu");
         String chotoBhai = ContactUtil.getRecipientIdFromContactNames(context, "bhai aritra");
         String munnuMa = ContactUtil.getRecipientIdFromContactNames(context, "Munnu ma");
-        Log.d("pupu =>", pupu);
-        Log.d("chotoBhai =>", chotoBhai);
-        Log.d("munnuMa =>", munnuMa);
+        Log.d(TAG, "pupu =>" + pupu);
+        Log.d(TAG, "chotoBhai =>" + chotoBhai);
+        Log.d(TAG, "munnuMa => " + munnuMa);
 
 //        if (recipientId != null) {
 //            // The recipientId variable now contains the phone number corresponding to the contact name "John Doe"

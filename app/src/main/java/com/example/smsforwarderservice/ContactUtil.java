@@ -3,13 +3,16 @@ package com.example.smsforwarderservice;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+import android.util.Log;
 
 public class ContactUtil {
+
+    private static final String TAG = "SMSForwarder";
 
     public static String getRecipientIdFromContactNames(Context context, String contactName) {
         // Replace these constants with the actual column names for name and phone number in your Contacts table
         String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
-
+        Log.d(TAG, "I am here inside getRecipientIdFromContactNames");
         String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + "=?";
         String[] selectionArgs = new String[]{contactName};
 
@@ -23,7 +26,16 @@ public class ContactUtil {
 
         try {
             if (cursor != null && cursor.moveToFirst()) {
-                return cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                int numberColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+
+                // Check if the column index is valid (not -1)
+                if (numberColumnIndex != -1) {
+                    return cursor.getString(numberColumnIndex);
+                } else {
+                    // Handle the case where the column is not found
+                    Log.d(TAG, "I state that Column not found");
+                    return "Column not found";
+                }
             }
         } finally {
             if (cursor != null) {

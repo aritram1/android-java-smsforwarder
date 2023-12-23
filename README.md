@@ -19,6 +19,6 @@ Project specifics :
 
 - **Stable Version:** [1.0.0](https://github.com/aritram1/flutter-expense-manager/tree/release/stable/1.0.0)
 
-### [Salesforce Backend](https://github.com/aritram1/salesforce-finplan)
+### [Salesforce Backend](https://github.com/aritram1/salesforce-finplan-managedg)
 
 - **Stable Version:** [1.0.0](https://github.com/aritram1/fin-plan-managed/tree/release/stable/1.0.0)

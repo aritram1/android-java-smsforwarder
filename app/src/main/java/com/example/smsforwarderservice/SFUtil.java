@@ -2,13 +2,9 @@ package com.example.smsforwarderservice;
 
 import android.os.AsyncTask;
 import android.os.Build;
-import android.provider.Telephony;
+import android.telephony.SmsManager;
 import android.util.Log;
-
-import org.json.JSONException;
 import org.json.JSONObject;
-import android.telephony.SmsMessage;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -16,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class SFUtil extends AsyncTask<SmsMessage[], Void, Void> {
+public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
 
     private static final String TAG = "SMSForwarder";
     private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
@@ -38,10 +34,10 @@ public class SFUtil extends AsyncTask<SmsMessage[], Void, Void> {
     private static final String PASSWORD = "financeplanner123W8oC4taee0H2GzxVbAqfVB14";
     private static final String GRANT_TYPE_PASSWORD = "password";
 
-    public SalesforceResponse sf_response;
+    public SalesforceResponseModel sf_response;
 
     @Override
-    protected Void doInBackground(SmsMessage[]... params) {
+    protected Void doInBackground(ArrayList<SMSMessageModel>... params) {
         if (sf_response == null || sf_response.accessToken == null) loginToSalesforce();
         try{
             saveToSalesforce(params[0]);
@@ -53,7 +49,7 @@ public class SFUtil extends AsyncTask<SmsMessage[], Void, Void> {
         return null;
     }
 
-    private void loginToSalesforce() {
+    void loginToSalesforce() {
         HttpURLConnection connection = null;
         try {
             String urlString = TOKEN_ENDPOINT + "?" +
@@ -89,7 +85,7 @@ public class SFUtil extends AsyncTask<SmsMessage[], Void, Void> {
 
                     // Parse the JSON response to obtain the access token
                     JSONObject jObj = new JSONObject(strResponse);
-                    sf_response = new SalesforceResponse();
+                    sf_response = new SalesforceResponseModel();
                     sf_response.accessToken = jObj.getString(ACCESS_TOKEN);
                     sf_response.instanceUrl = jObj.getString(INSTANCE_URL);
                     sf_response.id = jObj.getString(ID);
@@ -110,7 +106,7 @@ public class SFUtil extends AsyncTask<SmsMessage[], Void, Void> {
         }
     }
 
-    private void saveToSalesforce(SmsMessage[] msgs) {
+    void saveToSalesforce(ArrayList<SMSMessageModel> msgs) {
         Log.d(TAG, "Save to Salesforce method starts with token : " + sf_response.accessToken);
         try {
             Log.d(TAG, "Inside try block for save to salesforce");
@@ -121,20 +117,22 @@ public class SFUtil extends AsyncTask<SmsMessage[], Void, Void> {
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Authorization", "Bearer " + sf_response.accessToken);
             connection.setRequestProperty("Content-Type", "application/json");
-            //connection.setRequestProperty("Accept", "application/json");
             connection.setDoOutput(true); // Enable input and output streams
 
-            String sender = msgs[0].getOriginatingAddress();
-            String content = msgs[0].getMessageBody().length() < 255
-                                    ? msgs[0].getMessageBody()
-                                    : msgs[0].getMessageBody().substring(0, 255);
-            String receivedAt = String.valueOf(msgs[0].getTimestampMillis());
+            SMSMessageModel sms = msgs.get(0);
+            String sender = sms.sender;//getOriginatingAddress();
+            String content = sms.content.length() < 255
+                                    ? sms.content
+                                    : sms.content.substring(0, 255);
+            String receivedAt = String.valueOf(sms.receivedAt);
             String deviceName = Build.MODEL.startsWith(Build.MANUFACTURER)
                                     ? Build.MODEL
                                     : (Build.MANUFACTURER) + "-" + Build.MODEL;
+            String createdFrom = "SMS";
 
             Log.d(TAG, "sender=" + sender);
             Log.d(TAG, "content=" + content);
+            Log.d(TAG, "createdFrom=" + createdFrom);
             Log.d(TAG, "receivedAt=" + receivedAt);
             Log.d(TAG, "deviceName=" + deviceName);
 
@@ -142,6 +140,7 @@ public class SFUtil extends AsyncTask<SmsMessage[], Void, Void> {
                     + "\"FinPlan__Sender__c\":\"" + sender + "\","
                     + "\"FinPlan__Content__c\":\"" + content + "\","
                     + "\"FinPlan__Device__c\":\"" + deviceName + "\","
+                    + "\"FinPlan__Created_From__c\":\"" + createdFrom + "\","
                     + "\"FinPlan__Received_At__c\":\"" + receivedAt + "\""
                     + "}";
 
@@ -183,22 +182,10 @@ public class SFUtil extends AsyncTask<SmsMessage[], Void, Void> {
 
             // Close the connection
             connection.disconnect();
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "Exception during Salesforce API callout: " + e.getMessage());
         }
-    }
-}
-
-
-class SalesforceResponse {
-    public String accessToken;
-    public String instanceUrl;
-    public String id;
-    public String tokenType;
-    public String issuedAt;
-    public String signature;
-
-    public SalesforceResponse() {
     }
 }

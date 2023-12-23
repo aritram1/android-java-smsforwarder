@@ -6,10 +6,11 @@ import android.content.Intent;
 import android.util.Log;
 
 public class SMSReceiver extends BroadcastReceiver {
+    private static final String TAG = "SMSForwarder";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("SalesforceOAuthCallout", "Here");
+        Log.d(TAG, "Inside SMS Receiver");
         Util.processSMSReceivedIntent(context, intent);
     }
 }

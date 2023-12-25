@@ -1,5 +1,6 @@
-Project specifics :
+The android app that sends sms data to Salesforce as soon as it is received. A broadcastReceiver is used to implement this.
 
+More TBD.
 
 ## Compatibility and Dependent Repositories
 
@@ -19,6 +20,6 @@ Project specifics :
 
 - **Stable Version:** [1.0.0](https://github.com/aritram1/flutter-expense-manager/tree/release/stable/1.0.0)
 
-### [Salesforce Backend](https://github.com/aritram1/salesforce-finplan-managedg)
+### [Salesforce Backend](https://github.com/aritram1/salesforce-finplan-managed)
 
 - **Stable Version:** [1.0.0](https://github.com/aritram1/fin-plan-managed/tree/release/stable/1.0.0)

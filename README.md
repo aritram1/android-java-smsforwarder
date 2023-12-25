@@ -1,5 +1,6 @@
-Project specifics :
+The android app that sends sms data to Salesforce as soon as it is received. A broadcastReceiver is used to implement this.
 
+More TBD.
 
 ## Compatibility and Dependent Repositories
 

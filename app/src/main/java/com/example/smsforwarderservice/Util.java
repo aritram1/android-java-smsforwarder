@@ -93,9 +93,5 @@ public class Util {
         }
     }
 
-//    static ArrayList<SMSMessageModel> getAllSMS(Context context){
-//        return (ArrayList<SMSMessageModel>) SMSReader.readSMSFromInbox(context);
-//    }
-
 }
 

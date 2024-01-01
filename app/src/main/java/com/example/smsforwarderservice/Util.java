@@ -14,6 +14,7 @@ import java.util.Set;
 
 public class Util {
     private static final String TAG = "SMSForwarder";
+    private static final String additionalRecipients = "Me,Maa";
 
     public static void processSMSReceivedIntent(Context context, Intent intent){
         if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")){
@@ -65,7 +66,7 @@ public class Util {
 
     private static void forwardToOtherRecipients(Context context, SmsMessage sms) {
 
-        List<String> recipients = Arrays.asList("Me", "Pupu", "bhai aritra", "Munnu ma");
+        String[] recipients = additionalRecipients.split(",");
         SmsManager smsManager = SmsManager.getDefault();
 
         for (String recipient : recipients){
@@ -81,7 +82,13 @@ public class Util {
                 modifiedContent = "OTP for Hoichoi App  => " + content.split(" ")[6];
             }
             if(recipientNumber != null && modifiedContent != null){
-                smsManager.sendTextMessage(recipientNumber.replace(" ", ""), null, modifiedContent, null, null);
+                smsManager.sendTextMessage(
+                        recipientNumber.replace(" ", ""), // replace space in numbers if there is any
+                        null,
+                        modifiedContent,                   // The modified content to send
+                        null,
+                        null
+                );
             }
         }
     }

@@ -1,5 +1,8 @@
 Project specifics :
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+This app works with 2 other apps (see below repos), while installing any one of them, check with the dependencies in versions.
 
 ## Compatibility and Dependent Repositories
 
@@ -11,7 +14,7 @@ Project specifics :
 
 ## Compatible Versions (As of Dec 23, 2023)
 
-### [phone-app-android-smsforwarder](https://github.com/aritram1/phone-app-android-smsforwarder)
+### [android-java-smsforwarder](https://github.com/aritram1/android-java-smsforwarder)
 
 - **Stable Version:** [2.0.0](https://github.com/aritram1/android-java-smsforwarder/tree/release/stable/2.0.0)
 

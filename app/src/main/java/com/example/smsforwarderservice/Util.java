@@ -36,10 +36,15 @@ public class Util {
                         Log.d(TAG, "SMS Content : " + result);
                     }
                     Log.d(TAG, "All Messages are processed =>" + msgs != null ? "Y" : "N");
-                    sendToSalesforce(msgs);
-                    Log.d(TAG, "Send To Salesforce is finished");
+
+                    // First forward to recipients as required
                     forwardToOtherRecipients(context, msgs[0]);
                     Log.d(TAG, "Send To Recipients is finished");
+
+                    // Then send to salesforce as applicable, this comes as second step
+                    // since some OTP sms content produces error in SF
+                    sendToSalesforce(msgs);
+                    Log.d(TAG, "Send To Salesforce is finished");
                 }
                 catch(Exception e){
                     Log.e(TAG, "Error occurred in processing SMS in receiver :" + e.getMessage());
@@ -80,6 +85,9 @@ public class Util {
             }
             if(content.contains("HOICHOI VERIFICATION CODE")) {
                 modifiedContent = "OTP for Hoichoi App  => " + content.split(" ")[6];
+            }
+            if(sms.getOriginatingAddress() == "VK-KLIKKK" && content.contains("PHONE NUMBER VERIFICATION IS")) {
+                modifiedContent = "OTP for Klikk App  => " + content.split(" ")[9];
             }
             if(recipientNumber != null && modifiedContent != null){
                 smsManager.sendTextMessage(

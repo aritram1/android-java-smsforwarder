@@ -106,8 +106,6 @@ public class Util {
             if(content.contains("HOICHOI VERIFICATION CODE")) {
                 modifiedContent = "OTP for Hoichoi App  => " + content.split(" ")[6];
             }
-            Log.d(TAG, "sms.getOriginatingAddress() is =>" + sms.getOriginatingAddress() + "<=");
-            Log.d(TAG, "Content is " + content);
             if(content.contains("KLIKK") && content.contains("PHONE NUMBER VERIFICATION IS")) {
                 modifiedContent = "OTP for Klikk App  => " + content.split(" ")[9];
             }

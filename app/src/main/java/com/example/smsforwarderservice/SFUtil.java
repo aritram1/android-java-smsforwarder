@@ -125,9 +125,7 @@ public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
                                     ? sms.content
                                     : sms.content.substring(0, 255);
             String receivedAt = String.valueOf(sms.receivedAt);
-            String deviceName = Build.MODEL.startsWith(Build.MANUFACTURER)
-                                    ? Build.MODEL
-                                    : (Build.MANUFACTURER) + "-" + Build.MODEL;
+            String deviceName = Build.MODEL; //(Build.MANUFACTURER) + "-" + Build.MODEL
             String createdFrom = "SMS";
 
             Log.d(TAG, "sender=" + sender);

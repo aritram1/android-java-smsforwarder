@@ -10,11 +10,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class Util {
     private static final String TAG = "SMSForwarder";
-    private static final String additionalRecipients = "Me,Maa";
+    private static final String additionalRecipients = "Me, Maa";
 
     public static void processSMSReceivedIntent(Context context, Intent intent){
         if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")){
@@ -37,23 +38,32 @@ public class Util {
                     }
                     Log.d(TAG, "All Messages are processed =>" + msgs != null ? "Y" : "N");
 
-                    // First forward to recipients as required
-                    forwardToOtherRecipients(context, msgs[0]);
-                    Log.d(TAG, "Send To Recipients is finished");
-
-                    // Then send to salesforce as applicable, this comes as second step
-                    // since some OTP sms content produces error in SF
-                    if(msgs[0].getMessageBody().contains("OTP")
-                        ||  msgs[0].getMessageBody().contains("VERIFICATION CODE")
-                        ||  msgs[0].getOriginatingAddress().contains("+"))
-                    {
-                        // No need to consider this sms
+                    try{
+                        // First forward to recipients as required
+                        forwardToOtherRecipients(context, msgs[0]);
+                        Log.d(TAG, "Send To Recipients is finished");
                     }
-                    else{
-                        sendToSalesforce(msgs);
-                        Log.d(TAG, "Send To Salesforce is finished");
+                    catch(Exception e){
+                        Log.e(TAG, "Error occurred when processing forwardToOtherRecipients: " + e.getMessage());
+                        e.printStackTrace();
                     }
 
+                    try{
+                        if(msgs[0].getMessageBody().toUpperCase().contains("OTP") || msgs[0].getMessageBody().toUpperCase().contains("VERIFICATION CODE")){
+                            // Nothing required
+                            Log.d(TAG, "Send To Salesforce is not required");
+                        }
+                        else{
+                            // Then send to Salesforce
+                            sendToSalesforce(msgs);
+                            Log.d(TAG, "Send To Salesforce is finished");
+                        }
+
+                    }
+                    catch(Exception e){
+                        Log.e(TAG, "Error occurred when processing forwardToOtherRecipients: " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 }
                 catch(Exception e){
                     Log.e(TAG, "Error occurred in processing SMS in receiver :" + e.getMessage());
@@ -84,6 +94,7 @@ public class Util {
         SmsManager smsManager = SmsManager.getDefault();
 
         for (String recipient : recipients){
+            recipient = recipient.trim();
             String recipientNumber = ContactUtil.getRecipientIdFromContactNames(context, recipient);
             Log.d(TAG, recipient + " => " + recipientNumber);
 
@@ -95,9 +106,13 @@ public class Util {
             if(content.contains("HOICHOI VERIFICATION CODE")) {
                 modifiedContent = "OTP for Hoichoi App  => " + content.split(" ")[6];
             }
-            if(sms.getOriginatingAddress() == "VK-KLIKKK" && content.contains("PHONE NUMBER VERIFICATION IS")) {
+            Log.d(TAG, "sms.getOriginatingAddress() is =>" + sms.getOriginatingAddress() + "<=");
+            Log.d(TAG, "Content is " + content);
+            if(content.contains("KLIKK") && content.contains("PHONE NUMBER VERIFICATION IS")) {
                 modifiedContent = "OTP for Klikk App  => " + content.split(" ")[9];
             }
+
+            Log.d(TAG, "Modified Content is " + modifiedContent);
             if(recipientNumber != null && modifiedContent != null){
                 smsManager.sendTextMessage(
                         recipientNumber.replace(" ", ""), // replace space in numbers if there is any

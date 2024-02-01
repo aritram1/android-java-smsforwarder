@@ -43,8 +43,17 @@ public class Util {
 
                     // Then send to salesforce as applicable, this comes as second step
                     // since some OTP sms content produces error in SF
-                    sendToSalesforce(msgs);
-                    Log.d(TAG, "Send To Salesforce is finished");
+                    if(msgs[0].getMessageBody().contains("OTP")
+                        ||  msgs[0].getMessageBody().contains("VERIFICATION CODE")
+                        ||  msgs[0].getOriginatingAddress().contains("+"))
+                    {
+                        // No need to consider this sms
+                    }
+                    else{
+                        sendToSalesforce(msgs);
+                        Log.d(TAG, "Send To Salesforce is finished");
+                    }
+
                 }
                 catch(Exception e){
                     Log.e(TAG, "Error occurred in processing SMS in receiver :" + e.getMessage());

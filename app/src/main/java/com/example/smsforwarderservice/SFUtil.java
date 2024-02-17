@@ -121,9 +121,10 @@ public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
 
             SMSMessageModel sms = msgs.get(0);
             String sender = sms.sender;//getOriginatingAddress();
-            String content = sms.content.length() < 255
-                                    ? sms.content
-                                    : sms.content.substring(0, 255);
+            String content = sms.content.replace("\n", " ");
+            content = content.length() < 255
+                                    ? content
+                                    : content.substring(0, 255);
             String receivedAt = String.valueOf(sms.receivedAt);
             String deviceName = Build.MODEL; //(Build.MANUFACTURER) + "-" + Build.MODEL
             String createdFrom = "SMS";

@@ -28,11 +28,8 @@ public class SMSReceiver extends BroadcastReceiver {
                     Log.d(TAG, "All Messages are processed =>" + msgs != null ? "Y" : "N");
 
                     try{
-                        // As first step, check if forwarding is required
-                        if(Arrays.asList(GlobalConstants.FORWARD_ALLOWED_FROM_ADDRESSES)
-                                .contains(msgs[0].getOriginatingAddress())){
-                            Util.forwardToOtherRecipients(context, msgs[0]);
-                        }
+                        // As first step, check and forward as required
+                        Util.checkAndForwardAsRequired(context, msgs[0]);
                         Log.d(TAG, "Send To Recipients is finished");
                     }
                     catch(Exception e){

@@ -11,7 +11,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "SMSForwarder";
+    private static final String TAG = GlobalConstants.APP_NAME; // "SMSForwarder"
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         // If the app already has the SMS and CONTACTS permissions, proceed with further setup
         if (smsPermissionsGranted && contactsPermissionsGranted) {
-            // Add your further setup code here
+            // TBA - Add further setup code here
         }
     }
 
@@ -65,10 +65,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            if (allPermissionsGranted) {
+            // Add your logic after getting permissions here
+            if (allPermissionsGranted)
                 Toast.makeText(this, "Permissions granted!", Toast.LENGTH_SHORT).show();
-                // Add your logic after getting permissions here
-            } else {
+            else {
                 Toast.makeText(this, "Permissions denied! The app may not work correctly.", Toast.LENGTH_SHORT).show();
                 finish();
             }

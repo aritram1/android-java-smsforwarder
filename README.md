@@ -8,7 +8,7 @@ This app works with 2 other apps (see below repos), while installing any one of 
 
 3. [**Salesforce Backend**](https://github.com/aritram1/fin-plan-managed): The Salesforce backend is implemented as a packaged app named FinPlan, contributing to the overall backend functionality of the data and server side code.
 
-## Compatible Versions (As of Dec 23, 2023)
+## Compatible Versions (As of April 15, 2024)
 
 ### [android-java-smsforwarder](https://github.com/aritram1/android-java-smsforwarder)
 

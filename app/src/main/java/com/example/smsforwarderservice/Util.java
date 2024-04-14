@@ -33,9 +33,9 @@ public class Util {
             Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
             Log.d(TAG, "SMS Content : " + result);
         }
-        Log.d(TAG, "First!");
-        Log.d(TAG, "" + isMultiSimEnabled(context));
-        Log.d(TAG, "Last!");
+        // Log.d(TAG, "First!");
+        // Log.d(TAG, "Sim count : " + isMultiSimEnabled(context));
+        // Log.d(TAG, "Last!");
         return msgs;
     }
 
@@ -53,7 +53,6 @@ public class Util {
         }
     }
 
-
     static void checkAndForwardAsRequired(Context context, SmsMessage sms) {
 
         String[] recipients = OTP_RECEP_LIST.split(",");
@@ -70,13 +69,18 @@ public class Util {
                 String modifiedContent = generateMessageContent(sms);
 
                 if(recipientNumber != null && modifiedContent != null){
-                    // SmsManager smsManager = SmsManager.getDefault();
-                    SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
+                    // Since we have dual sim phone instead of
+                    // default [like SmsManager smsManager = SmsManager.getDefault()],
+                    // we will use the subscription ID of the first SIM card and
+                    // get the sms manager from there
                     try {
+                        SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
                         List<SubscriptionInfo> subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
                         if (subscriptionInfoList != null && !subscriptionInfoList.isEmpty()) {
                             // Return the subscription ID of the first SIM card
                             SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(subscriptionInfoList.get(0).getSubscriptionId());
+
+                            // Send / forward the message with this SMSManager record
                             smsManager.sendTextMessage(
                                     recipientNumber.replace(" ", ""), // replace space in numbers if there is any
                                     null,
@@ -88,11 +92,8 @@ public class Util {
                     }
                     catch(SecurityException e){
                         Log.d(TAG, "Error occurred inside checkAndForwardAsRequired => " + e.getMessage());
-
                     }
                 }
-
-                ///////
             }
             else{
                 Log.d(TAG, "Forwarding is not required");
@@ -118,11 +119,13 @@ public class Util {
         String appCode = "";
         String modifiedContent = "";
 
+        /*
         // # debugging loop below
         for(int i =0; i<content.split(" ").length; i++){
             String each = content.split(" ")[i];
             Log.d(TAG, i + "th value is=>" + each);
         }
+        */
 
         if(from.contains(GlobalConstants.SHORTCODE_HOTSTAR) && content.contains("HOTSTAR VERIFICATION CODE")) {
             appName = "Hotstar";
@@ -151,7 +154,7 @@ public class Util {
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             // Check for API level 22 (Lollipop MR1) or higher, because getPhoneCount() is not available below this API level
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
-                // Log.d(TAG, "Active modem count=>" + telephonyManager.getActiveModemCount());
+                Log.d(TAG, "Active modem count=>" + telephonyManager.getActiveModemCount());
                 Log.d(TAG, "Active sim count=>" + telephonyManager.getPhoneCount());
                 return telephonyManager.getPhoneCount() > 1;
             }

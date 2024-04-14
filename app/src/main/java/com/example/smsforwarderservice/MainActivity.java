@@ -1,8 +1,11 @@
 package com.example.smsforwarderservice;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -10,8 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "SMSForwarder";
+    private static final String TAG = GlobalConstants.APP_NAME; // "SMSForwarder"
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,42 +27,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkAndRequestPermissions() {
-        // Check if the app has the required SMS permissions
-        boolean smsPermissionsGranted =
-                ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+        String[] allPermissions = {
+                Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS,
+                Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS,
+                Manifest.permission.READ_PHONE_STATE
+        };
 
-        // Check if the app has the required CONTACTS permissions
-        boolean contactsPermissionsGranted =
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED &&
-                        ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+        List<String> permissionsNeeded = new ArrayList<>();
 
-        // If the app doesn't have the SMS permissions, request them
-        if (!smsPermissionsGranted) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS},
-                    1000);
+        for (String permission : allPermissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionsNeeded.add(permission);
+            }
         }
 
-        // If the app doesn't have the CONTACTS permissions, request them
-        if (!contactsPermissionsGranted) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS},
-                    1001);
-        }
-
-        // If the app already has the SMS and CONTACTS permissions, proceed with further setup
-        if (smsPermissionsGranted && contactsPermissionsGranted) {
-            // Add your further setup code here
+        if (!permissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, permissionsNeeded.toArray(new String[0]), 1002);
+        } else {
+            // All permissions are already granted, proceed with further setup
+            proceedWithAppFunctionality();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1000 || requestCode == 1001) {
-            // Check if all requested permissions are granted
+        if (requestCode == 1002) {
             boolean allPermissionsGranted = true;
             for (int result : grantResults) {
                 if (result != PackageManager.PERMISSION_GRANTED) {
@@ -66,12 +62,19 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (allPermissionsGranted) {
-                Toast.makeText(this, "Permissions granted!", Toast.LENGTH_SHORT).show();
-                // Add your logic after getting permissions here
+                Toast.makeText(this, "All permissions granted!", Toast.LENGTH_SHORT).show();
+                proceedWithAppFunctionality();
             } else {
-                Toast.makeText(this, "Permissions denied! The app may not work correctly.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Some permissions denied! The app may not work correctly.", Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
     }
+
+    private void proceedWithAppFunctionality() {
+        // This method would contain all the actions to be performed once all permissions are granted
+        Toast.makeText(this, "Setting up app functionalities.", Toast.LENGTH_SHORT).show();
+        // Further setup code here, e.g., initializing views, setting up services, etc.
+    }
+
 }

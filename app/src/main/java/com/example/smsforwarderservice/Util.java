@@ -149,6 +149,8 @@ public class Util {
 
     }
 
+    // For testing
+    /*
     public static boolean isMultiSimEnabled(Context context) {
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -161,6 +163,7 @@ public class Util {
         }
         return false;
     }
+    */
 
 }
 

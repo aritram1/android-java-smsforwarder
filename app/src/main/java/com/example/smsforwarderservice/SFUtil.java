@@ -1,5 +1,4 @@
 package com.example.smsforwarderservice;
-
 import android.os.AsyncTask;
 import android.os.Build;
 import android.telephony.SmsManager;
@@ -14,29 +13,8 @@ import java.util.ArrayList;
 
 public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
 
-    private static final String TAG = "SMSForwarder";
-    private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
-    private static final String CONTENT_TYPE_APPLICATION_FORM_URL_ENCODED = "application/x-www-form-urlencoded";
-    private static final String RESOURCE_URL = "/services/data/v53.0/sobjects/FinPlan__SMS_Message__c";
-
-    private static final String PE_URL = "/services/data/v53.0/sobjects/FinPlan__SMS_Message__c";
-
-    private static final String ACCESS_TOKEN = "access_token";
-    private static final String INSTANCE_URL = "instance_url";
-    private static final String ID = "id";
-    private static final String TOKEN_TYPE = "token_type";
-    private static final String ISSUED_AT = "issued_at";
-    private static final String SIGNATURE = "signature";
-
-    private static final String POST = "POST";
-    private static final String TOKEN_ENDPOINT = "https://login.salesforce.com/services/oauth2/token";
-    private static final String CLIENT_ID = "3MVG9wt4IL4O5wvIBCa0yrhLb82rC8GGk03G2F26xbcntt9nq1JXS75mWYnnuS2rxwlghyQczUFgX4whptQeT";
-    private static final String CLIENT_SECRET = "3E0A6C0002E99716BD15C7C35F005FFFB716B8AA2DE28FBD49220EC238B2FFC7";
-    private static final String USERNAME = "aritram1@gmail.com.financeplanner";
-    private static final String PASSWORD = "financeplanner123W8oC4taee0H2GzxVbAqfVB14";
-    private static final String GRANT_TYPE_PASSWORD = "password";
-
     public SalesforceResponseModel sf_response;
+    private static final String TAG = "SMSForwarder";
 
     @Override
     protected Void doInBackground(ArrayList<SMSMessageModel>... params) {
@@ -55,19 +33,19 @@ public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
     void loginToSalesforce() {
         HttpURLConnection connection = null;
         try {
-            String urlString = TOKEN_ENDPOINT + "?" +
-                    "grant_type=" + GRANT_TYPE_PASSWORD +
-                    "&client_id=" + CLIENT_ID +
-                    "&client_secret=" + CLIENT_SECRET +
-                    "&username=" + USERNAME +
-                    "&password=" + PASSWORD;
+            String urlString = GlobalConstants.TOKEN_ENDPOINT + "?" +
+                    "grant_type=" + GlobalConstants.GRANT_TYPE_PASSWORD +
+                    "&client_id=" + GlobalConstants.CLIENT_ID +
+                    "&client_secret=" + GlobalConstants.CLIENT_SECRET +
+                    "&username=" + GlobalConstants.USERNAME +
+                    "&password=" + GlobalConstants.PASSWORD;
             URL url = new URL(urlString);
             Log.d(TAG, "Login Endpoint url is =>"  + url.toString());
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(POST);
+            connection.setRequestMethod(GlobalConstants.POST);
 
             // Set header properties
-            connection.setRequestProperty(CONTENT_TYPE_HEADER_NAME, CONTENT_TYPE_APPLICATION_FORM_URL_ENCODED);
+            connection.setRequestProperty(GlobalConstants.CONTENT_TYPE_HEADER_NAME, GlobalConstants.CONTENT_TYPE_APPLICATION_FORM_URL_ENCODED);
 
             // Read the response and get the HTTP response code
             int responseCode = connection.getResponseCode();
@@ -89,12 +67,12 @@ public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
                     // Parse the JSON response to obtain the access token
                     JSONObject jObj = new JSONObject(strResponse);
                     sf_response = new SalesforceResponseModel();
-                    sf_response.accessToken = jObj.getString(ACCESS_TOKEN);
-                    sf_response.instanceUrl = jObj.getString(INSTANCE_URL);
-                    sf_response.id = jObj.getString(ID);
-                    sf_response.tokenType = jObj.getString(TOKEN_TYPE);
-                    sf_response.issuedAt = jObj.getString(ISSUED_AT);
-                    sf_response.signature = jObj.getString(SIGNATURE);
+                    sf_response.accessToken = jObj.getString(GlobalConstants.ACCESS_TOKEN);
+                    sf_response.instanceUrl = jObj.getString(GlobalConstants.INSTANCE_URL);
+                    sf_response.id = jObj.getString(GlobalConstants.ID);
+                    sf_response.tokenType = jObj.getString(GlobalConstants.TOKEN_TYPE);
+                    sf_response.issuedAt = jObj.getString(GlobalConstants.ISSUED_AT);
+                    sf_response.signature = jObj.getString(GlobalConstants.SIGNATURE);
                 }
             } else {
                 Log.e(TAG, "Error obtaining access token. HTTP response code: " + responseCode);
@@ -197,7 +175,7 @@ public class SFUtil extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
         Log.d(TAG, "Save to Salesforce method starts with token : " + sf_response.accessToken);
         try {
             Log.d(TAG, "Inside try block for save to salesforce");
-            URL url = new URL(sf_response.instanceUrl + RESOURCE_URL);
+            URL url = new URL(sf_response.instanceUrl + GlobalConstants.RESOURCE_URL);
             Log.d(TAG, "Save to SF Endpoint url is =>"  + url.toString());
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

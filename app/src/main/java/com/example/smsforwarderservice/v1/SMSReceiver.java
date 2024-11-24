@@ -1,4 +1,4 @@
-package com.example.smsforwarderservice;
+package com.example.smsforwarderservice.v1;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -6,10 +6,6 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Set;
 
 public class SMSReceiver extends BroadcastReceiver {
     private static final String TAG = GlobalConstants.APP_NAME; // SMSForwarder

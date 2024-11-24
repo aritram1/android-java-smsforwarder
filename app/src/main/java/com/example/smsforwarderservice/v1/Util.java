@@ -1,20 +1,15 @@
-package com.example.smsforwarderservice;
+package com.example.smsforwarderservice.v1;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.core.content.ContextCompat;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Util {
@@ -49,7 +44,7 @@ public class Util {
                 eachSMS.sender = sms.getOriginatingAddress();
                 sms_msgs.add(eachSMS);
             }
-            new SFUtil().execute(sms_msgs);
+            new SFUtil2().execute(sms_msgs);
         }
     }
 

@@ -1,4 +1,4 @@
-package com.example.smsforwarderservice;
+package com.example.smsforwarderservice.v1;
 
 public class GlobalConstants {
     static final String APP_NAME = "SMSForwarder";
@@ -27,5 +27,12 @@ public class GlobalConstants {
     static final String USERNAME = "aritram1@gmail.com.financeplanner";
     static final String PASSWORD = "financeplanner123W8oC4taee0H2GzxVbAqfVB14";
     static final String GRANT_TYPE_PASSWORD = "password";
+
+    static final String INSTANCE_URL2 = "https://expenso-dev-ed.develop.my.salesforce.com";
+    static final String CLIENT_ID2 = "3MVG9k02hQhyUgQAH_sdqt1SK.dprVVZ7C5oouxnQhMB6PQycuII2sZiJPZD64xJavuyeg3m8.aiX65IFxtAD";
+    static final String CLIENT_SECRET2 = "81E33EC5923261685884EB5A7DFC0457D8A89ABF80CAE5DC7D1137069151FB7Da";
+    static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
+    static final String PLATFORM_EVENT_ENDPOINT2 = "/services/data/v59.0/sobjects/FinPlan__SMS_Message_PE__e";
+
 
 }

@@ -1,4 +1,4 @@
-package com.example.smsforwarderservice;
+package com.example.smsforwarderservice.v1;
 
 import android.content.Context;
 import android.database.Cursor;

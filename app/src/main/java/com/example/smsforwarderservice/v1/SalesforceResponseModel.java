@@ -1,4 +1,4 @@
-package com.example.smsforwarderservice;
+package com.example.smsforwarderservice.v1;
 public class SalesforceResponseModel {
     public String accessToken;
     public String instanceUrl;

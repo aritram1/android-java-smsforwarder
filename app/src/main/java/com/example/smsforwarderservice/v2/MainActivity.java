@@ -1,6 +1,8 @@
 package com.example.smsforwarderservice.v2;
 import com.example.smsforwarderservice.R;
 import com.example.smsforwarderservice.v2.helper.GlobalConstants;
+import com.example.smsforwarderservice.v2.helper.OAuthUtilPasswordFlow;
+import com.example.smsforwarderservice.v2.model.SalesforceResponseModel;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, neededPermissions.toArray(new String[0]), 1001);
         } else {
             proceedWithFunctionality();
+            SalesforceResponseModel tokenResponse = OAuthUtilPasswordFlow.loginWithPasswordFlow();
         }
     }
 
@@ -67,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (allGranted) {
                 proceedWithFunctionality();
+                SalesforceResponseModel tokenResponse = OAuthUtilPasswordFlow.loginWithPasswordFlow();
             } else {
                 Toast.makeText(this, "Permissions denied!", Toast.LENGTH_SHORT).show();
             }

@@ -80,7 +80,7 @@ public class Util {
                 model.sender = sms.getOriginatingAddress();
                 smsMessages.add(model);
             }
-            new SFUtil().execute(smsMessages);
+            new SFUtil().sendMessagesToSalesforce(smsMessages);
         }
     }
 

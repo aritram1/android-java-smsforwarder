@@ -19,7 +19,7 @@ public class TokenStorage {
         editor.apply();
     }
 
-    public static SalesforceResponseModel getToken(Context context) {
+    public static SalesforceResponseModel getSavedResponse(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SalesforceResponseModel response = new SalesforceResponseModel();
         response.accessToken = prefs.getString(KEY_ACCESS_TOKEN, null);

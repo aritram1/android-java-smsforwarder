@@ -13,9 +13,8 @@
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
-<!--    <uses-permission android:name="android.permission.MANAGE_SUBSCRIPTION_USER_ASSOCIATION" />-->
-
     <application
+        android:name=".v2.AppContextProvider"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -26,14 +25,14 @@
         android:theme="@style/Theme.SMSForwarderService"
         tools:targetApi="31">
         <activity
-            android:name=".v1.MainActivity"
+            android:name=".v2.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".v1.SMSReceiver"
+        <receiver android:name=".v2.SMSReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />

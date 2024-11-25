@@ -2,38 +2,71 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background">
+    android:background="@drawable/gradient_background"
+    android:padding="16dp">
 
+    <!-- Cropped Image -->
+    <ImageView
+        android:id="@+id/headerImage"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/app_header_image" />
+
+    <!-- Service Started Text -->
     <TextView
         android:id="@+id/startMessageTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/headerImage"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="16dp"
         android:text="Service started successfully"
         android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
+    <!-- Thank You Text -->
     <TextView
         android:id="@+id/thankYouTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/startMessageTextView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:text="Thank you !"
+        android:layout_marginTop="12dp"
+        android:text="You can safely close the app now"
         android:textColor="#FFFFFF"
-        android:textSize="24sp" />
+        android:textSize="22sp"
+        android:textStyle="italic" />
 
+    <!-- Close Instructions -->
     <TextView
         android:id="@+id/mayCloseTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/thankYouTextView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:text="You may close the app now"
+        android:layout_marginTop="12dp"
+        android:text="Thank you for using our app!"
         android:textColor="#FFFFFF"
         android:textSize="16sp" />
+
+    <!-- Close Button -->
+    <Button
+        android:id="@+id/closeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mayCloseTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:padding="12dp"
+        android:backgroundTint="#FF5722"
+        android:text="Close App"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

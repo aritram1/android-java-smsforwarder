@@ -8,7 +8,7 @@ import android.telephony.SmsMessage;
 import com.example.smsforwarderservice.v2.helper.GlobalConstants;
 import com.example.smsforwarderservice.v2.helper.Util;
 
-public class SMSReceiver extends BroadcastReceiver {
+public class SMSBroadcastReceiver extends BroadcastReceiver {
     static final String TAG = GlobalConstants.APP_NAME;
 
     @Override

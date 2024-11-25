@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.example.smsforwarderservice.v2.helper.GlobalConstants;
 
-public class BootReceiver extends BroadcastReceiver {
+public class BootBroadCastReceiver extends BroadcastReceiver {
     private static final String TAG = GlobalConstants.APP_NAME;
 
     @Override

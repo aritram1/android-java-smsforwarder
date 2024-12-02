@@ -66,11 +66,11 @@ public class SFUtil2 extends AsyncTask<ArrayList<SMSMessageModel>, Void, Void> {
             Log.d(TAG, "deviceName=" + deviceName);
 
             String jsonPayload = "{"
-                    + "\"FinPlan__Sender__c\":\"" + sender + "\","
-                    + "\"FinPlan__Content__c\":\"" + content + "\","
-                    + "\"FinPlan__Device__c\":\"" + deviceName + "\","
-                    + "\"FinPlan__Created_From__c\":\"" + createdFrom + "\","
-                    + "\"FinPlan__Received_At__c\":\"" + receivedAt + "\""
+                    + "\"Sender__c\":\"" + sender + "\","
+                    + "\"Content__c\":\"" + content + "\","
+                    + "\"Device__c\":\"" + deviceName + "\","
+                    + "\"Created_From__c\":\"" + createdFrom + "\","
+                    + "\"Received_At__c\":\"" + receivedAt + "\""
                     + "}";
 
             Log.d(TAG, "jsonPayload=>" + jsonPayload);

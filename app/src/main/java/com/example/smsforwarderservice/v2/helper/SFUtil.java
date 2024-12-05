@@ -12,6 +12,7 @@ import com.example.smsforwarderservice.v2.model.SalesforceResponseModel;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -109,11 +110,13 @@ public class SFUtil {
                     }
 
                     int responseCode = connection.getResponseCode();
+
                     if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                        Log.d(TAG, "Message sent successfully to Salesforce." +
-                                responseCode + " : " +
-                                connection.getResponseMessage());
-                    } else {
+                        String responseBody = extractResponseBody(connection);
+                        Log.d(TAG, "Message sent successfully to Salesforce => " + responseCode);
+                        Log.d(TAG, "Response message => " + responseBody);
+                    }
+                    else {
                         Log.e(TAG, "Failed to send message. HTTP Response Code: " + responseCode);
                         handleErrorResponse(connection);
                     }
@@ -121,6 +124,20 @@ public class SFUtil {
             }
         } catch (Exception e) {
             Log.e(TAG, "Error while sending messages to Salesforce: ", e);
+        }
+    }
+
+    private static String extractResponseBody(HttpURLConnection connection) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            StringBuilder responseBody = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                responseBody.append(line);
+            }
+            return responseBody.toString();
+        } catch (IOException e) {
+            Log.e(TAG, "Error reading response body", e);
+            return e.getStackTrace().toString();
         }
     }
 

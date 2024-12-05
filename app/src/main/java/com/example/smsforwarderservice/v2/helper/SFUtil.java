@@ -2,7 +2,6 @@ package com.example.smsforwarderservice.v2.helper;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -33,7 +32,8 @@ public class SFUtil {
         executor.execute(() -> {
             try {
                 // Retrieve stored Salesforce token or login if not available
-                SalesforceResponseModel sfResponse = getStoredResponse();
+                SalesforceResponseModel sfResponse =
+                        ExpensoTokenStorageService.getSavedResponse(AppContextProvider.getContext());
                 if (sfResponse == null || sfResponse.accessToken == null) {
                     Log.d(TAG, "No valid token found. Initiating login flow...");
                     sfResponse = loginAndRetrieveToken();
@@ -54,23 +54,25 @@ public class SFUtil {
     }
 
     /**
-     * Retrieve the stored Salesforce token from local storage.
-     */
-    private static SalesforceResponseModel getStoredResponse() {
-        return TokenStorage.getSavedResponse(AppContextProvider.getContext());
-    }
-
-    /**
      * Perform login using OAuth password flow and retrieve a new token.
      */
-    private static SalesforceResponseModel loginAndRetrieveToken() {
-        final SalesforceResponseModel[] response = {null};
-        OAuthUtilPasswordFlow.loginWithPasswordFlow(new OAuthUtilPasswordFlow.Callback() {
+
+    public static SalesforceResponseModel loginAndRetrieveToken() {
+        final SalesforceResponseModel[] loginResponse = new SalesforceResponseModel[1];
+        OAuthUtilClientCredentialsFlow.loginWithClientCredentialsFlow(new OAuthUtilClientCredentialsFlow.Callback() {
             @Override
             public void onSuccess(SalesforceResponseModel sfResponse) {
                 Log.d(TAG, "Login successful. Token retrieved.");
-                response[0] = sfResponse;
-                TokenStorage.saveToken(AppContextProvider.getContext(), sfResponse);
+                Log.d(TAG, "Login Successful : Salesforce Response Details:");
+                Log.d(TAG, "Login Successful : Access Token: " + sfResponse.accessToken);
+                Log.d(TAG, "Login Successful : Instance URL: " + sfResponse.instanceUrl);
+                Log.d(TAG, "Login Successful : ID: " + sfResponse.id);
+                Log.d(TAG, "Login Successful : Token Type: " + sfResponse.tokenType);
+                Log.d(TAG, "Login Successful : Issued At: " + sfResponse.issuedAt);
+                Log.d(TAG, "Login Successful : Signature: " + sfResponse.signature);
+                ExpensoTokenStorageService.saveToken(AppContextProvider.getContext(), sfResponse);
+                loginResponse[0] = sfResponse;
+                showToast("Login successful: " + sfResponse.accessToken);
             }
 
             @Override
@@ -81,7 +83,7 @@ public class SFUtil {
         });
 
         // Return the token retrieved
-        return response[0];
+        return loginResponse[0];
     }
 
     /**

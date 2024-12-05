@@ -25,7 +25,7 @@ public class GlobalConstants {
     public static final String ISSUED_AT = "issued_at";
     public static final String SIGNATURE = "signature";
     public static final String GRANT_TYPE_PASSWORD = "password";
-    public static final String REDIRECT_URI = "https://localhost";
+    public static final String REDIRECT_URI = "http://localhost";
 
     public static final String USERNAME2 = "aritram1@gmail.com.financeplanner";
     public static final String PASSWORD2 = "financeplanner123W8oC4taee0H2GzxVbAqfVB14";
@@ -34,11 +34,11 @@ public class GlobalConstants {
     public static final String RESOURCE_URL2 = "/services/data/v53.0/sobjects/FinPlan__SMS_Message__c";
 
     // public static final String INSTANCE_URL2 = "https://expenso-dev-ed.develop.my.salesforce.com";
-    public static final String USERNAME = "aritram1@gmail.com.expenso";
-    public static final String PASSWORD = "expenso11LGIA6Y4NrPyczh3LZTZKgWW";
-    public static final String CLIENT_ID = "3MVG9k02hQhyUgQAH_sdqt1SK.dprVVZ7C5oouxnQhMB6PQycuII2sZiJPZD64xJavuyeg3m8.aiX65IFxtAD";
-    public static final String CLIENT_SECRET = "81E33EC5923261685884EB5A7DFC0457D8A89ABF80CAE5DC7D1137069151FB7Da";
-    public static final String GRANT_TYPE_CLIENT_CREDENTIALS2 = "client_credentials";
+    public static final String  USERNAME = "aritram1@gmail.com.expenso";
+    public static final String PASSWORD = "expenso1hmjmTb7kYcROHD6FtOYGPVVO";
+    public static final String CLIENT_ID = "3MVG9k02hQhyUgQAH_sdqt1SK.UP_KJVv9NytGFYs80P8fNz8sdqnag.zaC3dDd_98BlhPqj07oielhVpx51U";
+    public static final String CLIENT_SECRET = "9217258B3C870B6DEF1CD180B59F5161400691A0896CCE60BF79C2FB34650677";
+    public static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
     public static final String RESOURCE_URL = "/services/data/v59.0/sobjects/SMS_Platform_Event__e";
-
+    public static final String TOKEN_ENDPOINT_FOR_CLIENT_CREDENTIALS_FLOW = "https://expenso-dev-ed.develop.my.salesforce.com/services/oauth2/token";
 }

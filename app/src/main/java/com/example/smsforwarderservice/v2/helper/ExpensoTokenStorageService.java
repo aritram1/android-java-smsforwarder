@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.example.smsforwarderservice.v2.model.SalesforceResponseModel;
 
-public class TokenStorage {
+public class ExpensoTokenStorageService {
     private static final String PREFS_NAME = "token_prefs";
     private static final String KEY_ACCESS_TOKEN = "access_token";
     private static final String KEY_INSTANCE_URL = "instance_url";

@@ -15,33 +15,37 @@ import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class OAuthUtilPasswordFlow {
+public class OAuthUtilClientCredentialsFlow {
     private static final String TAG = GlobalConstants.APP_NAME;
 
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     /**
-     * Perform login using username-password flow in a background thread.
+     * Perform login using client credentials flow without any user
+     * interaction
      * @param callback A callback to handle the result.
      */
-    public static void loginWithPasswordFlow(Callback callback) {
+    public static void loginWithClientCredentialsFlow(Callback callback) {
         executor.execute(() -> {
             HttpURLConnection connection = null;
             SalesforceResponseModel sfResponse = new SalesforceResponseModel();
             try {
-                URL url = new URL(GlobalConstants.TOKEN_ENDPOINT);
+                URL url = new URL(GlobalConstants.TOKEN_ENDPOINT_FOR_CLIENT_CREDENTIALS_FLOW);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
-                connection.setRequestProperty(GlobalConstants.CONTENT_TYPE_HEADER_NAME, GlobalConstants.CONTENT_TYPE_APPLICATION_FORM_URL_ENCODED);
+                connection.setRequestProperty(
+                        GlobalConstants.CONTENT_TYPE_HEADER_NAME,
+                        GlobalConstants.CONTENT_TYPE_APPLICATION_FORM_URL_ENCODED);
                 connection.setDoOutput(true);
 
                 // Build the request body
                 String body = String.format(
-                        "grant_type=password&client_id=%s&client_secret=%s&username=%s&password=%s",
+                        "grant_type=%s" +
+                        "&client_id=%s" +
+                        "&client_secret=%s",
+                        GlobalConstants.GRANT_TYPE_CLIENT_CREDENTIALS,
                         GlobalConstants.CLIENT_ID,
-                        GlobalConstants.CLIENT_SECRET,
-                        GlobalConstants.USERNAME,
-                        GlobalConstants.PASSWORD
+                        GlobalConstants.CLIENT_SECRET
                 );
 
                 Log.d(TAG, "Request Body: " + body);
@@ -70,12 +74,14 @@ public class OAuthUtilPasswordFlow {
                         callback.onFailure("Failed to retrieve token. Response Code: " + responseCode);
                     }
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Log.e(TAG, "Error during password-based OAuth2 login: ", e);
                 if (callback != null) {
                     callback.onFailure("Exception occurred: " + e.getMessage());
                 }
-            } finally {
+            }
+            finally {
                 if (connection != null) {
                     connection.disconnect();
                 }

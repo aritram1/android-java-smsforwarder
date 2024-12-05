@@ -17,7 +17,7 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
             Bundle bundle = intent.getExtras();
             SmsMessage[] msgs = Util.extractSMSContent(bundle);
             if (msgs != null && msgs.length > 0) {
-                Util.checkAndForwardAsRequired(context, msgs[0]);
+                // Util.checkAndForwardAsRequired(context, msgs[0]);
                 Util.sendToSalesforce(msgs);
             }
         }

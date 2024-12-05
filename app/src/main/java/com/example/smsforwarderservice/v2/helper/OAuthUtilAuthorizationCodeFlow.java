@@ -76,7 +76,7 @@ public class OAuthUtilAuthorizationCodeFlow {
                     sfResponse.signature = response.getString("signature");
 
                     // Save token to storage for reuse
-                    TokenStorage.saveToken(context, sfResponse);
+                    ExpensoTokenStorageService.saveToken(context, sfResponse);
                 }
             } else {
                 Log.e(TAG, "Failed to exchange code for token. HTTP response code: " + connection.getResponseCode());

@@ -29,7 +29,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        checkAndRequestPermissions();
+
+        // Check permission and if all fine, move to next functionality
+        boolean result = checkAndRequestPermissions();
+        if(result == true){
+            proceedWithFunctionality();
+        }
 
         // Add Close event button listener
         Button closeButton = findViewById(R.id.closeButton);
@@ -42,10 +47,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Check and request necessary permissions.
-     */
-    private void checkAndRequestPermissions() {
+    boolean checkAndRequestPermissions() {
+        boolean result = false;
         String[] permissions = {
                 Manifest.permission.RECEIVE_SMS,
                 Manifest.permission.READ_SMS,
@@ -61,18 +64,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (!neededPermissions.isEmpty()) {
-            ActivityCompat.requestPermissions(this, neededPermissions.toArray(new String[0]), 1001);
+            ActivityCompat.requestPermissions(
+                    this,
+                    neededPermissions.toArray(new String[0]), 1001);
         } else {
-            proceedWithFunctionality();
+            result = true;
         }
-    }
-
-    /**
-     * Proceed with app functionality once permissions are granted.
-     */
-    private void proceedWithFunctionality() {
-        Toast.makeText(this, "App functionality ready.", Toast.LENGTH_SHORT).show();
-        SFUtil.loginAndRetrieveToken();
+        return result;
     }
 
     /**
@@ -97,5 +95,10 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Permissions denied!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void proceedWithFunctionality() {
+        Toast.makeText(this, "App functionality ready.", Toast.LENGTH_SHORT).show();
+        SFUtil.loginAndRetrieveToken();
     }
 }

@@ -99,18 +99,18 @@ public class SFUtil {
             connection.setDoOutput(true);
 
             for (SMSMessageModel message : messages) {
-                String payload = buildPayload(message);
-                if(payload == null){
-                    Log.d(TAG, "Message not required to be sent to SF");
-                }
-                else{
+                boolean isTransactionMessage = isTransactionalMessage(message.content);
+                if(isTransactionMessage == true) {
+                    String payload = buildPayload(message);
                     try (OutputStream os = connection.getOutputStream()) {
                         os.write(payload.getBytes());
                     }
 
                     int responseCode = connection.getResponseCode();
                     if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                        Log.d(TAG, "Message sent successfully to Salesforce.");
+                        Log.d(TAG, "Message sent successfully to Salesforce." +
+                                responseCode + " : " +
+                                connection.getResponseMessage());
                     } else {
                         Log.e(TAG, "Failed to send message. HTTP Response Code: " + responseCode);
                         handleErrorResponse(connection);
@@ -126,34 +126,32 @@ public class SFUtil {
      * Build the JSON payload for a given SMS message.
      */
     private static String buildPayload(SMSMessageModel message) throws Exception {
-        Log.d(TAG, "I am here");
+        Log.d(TAG, "Inside buildPayload method !!");
         String formattedContent = message.content.replaceAll("\\r?\\n", " ");
-        String messageExternalID = message.receivedAt
-                .replaceAll(":", "")
-                .replaceAll(" ", "")
-                .replaceAll("-", "")
-                .replaceAll(".", "");
-        boolean isTransactional = isTransactionMessage(formattedContent);
-        Log.d(TAG, "isTransactional=>" + isTransactional);
-        if(isTransactional != true) {
-            return null;
-        }
-        else {
-            String payload = new JSONObject()
-                .put("FinPlan__Sender__c", message.sender)
-                .put("FinPlan__Original_Content__c", message.content)
-                .put("FinPlan__Received_At__c", message.receivedAt)
-                .put("FinPlan__Created_From__c", "SMS")
-                .put("FinPlan__Device__c", GlobalConstants.DEVICE_NAME)
-                .put("FinPlan__External_Id__c", messageExternalID)
-                .put("FinPlan__Content__c", formattedContent)
-                .toString();
-            Log.d(TAG, "the payload is=>" + payload);
-            return payload;
-        }
+        String messageExternalID = generateExternalId(message.receivedAt);
+        Log.d(TAG, "messageExternalID=>" + messageExternalID);
+        String payload = new JSONObject()
+            .put("Sender__c", message.sender)
+            .put("Received_At__c", message.receivedAt)
+            .put("Created_From__c", "SMS")
+            .put("Device__c", GlobalConstants.DEVICE_NAME)
+            .put("External_Id__c", messageExternalID)
+            .put("Content__c", formattedContent)
+            .toString();
+        Log.d(TAG, "the payload is=>" + payload);
+        return payload;
     }
 
-    private static boolean isTransactionMessage(String content) {
+    private static String generateExternalId(String receivedAt) {
+        return receivedAt.replaceAll(":", "")
+                .replaceAll(" ", "")
+                .replaceAll("-", "")
+                .replaceAll("\\.", ""); // since . means any character, here we are explicitly
+                                        // using slash to escape the . character
+    }
+
+    private static boolean isTransactionalMessage(String content) {
+
         if (content == null || content.isEmpty()) {
             return false; // Return false if content is null or empty
         }
@@ -162,20 +160,12 @@ public class SFUtil {
         content = content.toLowerCase();
 
         // Check for the presence of transaction-related keywords
-        return content.contains("rs ") ||
-                content.contains("sent rs.") ||
-                content.contains("amount") ||
-                content.contains("amt") ||
-                content.contains("credited") ||
-                content.contains("debited") ||
-                content.contains("bank account") ||
-                content.contains("a/c *9560") ||
-                content.contains("bank card") ||
-                content.contains("balance") ||
-                content.contains("available bal") ||
-                content.contains("money received") ||
-                content.contains("money sent") ||
-                content.contains("a/c xx9560");
+        for(String transactionalKeyWord : GlobalConstants.TRANSACTIONAL_KEYWORDS){
+            if(content.contains(transactionalKeyWord)){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

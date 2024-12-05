@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class SFUtil {
+
     private static final String TAG = GlobalConstants.APP_NAME;
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
     private static final Handler handler = new Handler(Looper.getMainLooper());
@@ -58,8 +59,7 @@ public class SFUtil {
 
     /**
      * Perform login using OAuth password flow and retrieve a new token.
-     */
-
+    */
     public static SalesforceResponseModel loginAndRetrieveToken() {
         final SalesforceResponseModel[] loginResponse = new SalesforceResponseModel[1];
         OAuthUtilClientCredentialsFlow.loginWithClientCredentialsFlow(new OAuthUtilClientCredentialsFlow.Callback() {
@@ -127,6 +127,9 @@ public class SFUtil {
         }
     }
 
+    /**
+     * Extract the response body from connection via BufferedReader
+    **/
     private static String extractResponseBody(HttpURLConnection connection) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             StringBuilder responseBody = new StringBuilder();
@@ -143,50 +146,53 @@ public class SFUtil {
 
     /**
      * Build the JSON payload for a given SMS message.
-     */
+     **/
     private static String buildPayload(SMSMessageModel message) throws Exception {
         Log.d(TAG, "Inside buildPayload method !!");
         String formattedContent = message.content.replaceAll("\\r?\\n", " ");
-        String messageExternalID = generateExternalId(message.receivedAt);
-        String receivedAt = checkAndConvertToSFDateTimeFormat(message.receivedAt);
-        Log.d(TAG, "messageExternalID=>" + messageExternalID);
+        String receivedAtString = checkAndConvertToSFDateTimeFormat(message.receivedAt);
+        String externalIdString = generateExternalId(receivedAtString);
+        Log.d(TAG, "externalIdString=>" + externalIdString);
         String payload = new JSONObject()
-            .put("Sender__c", message.sender)
-            .put("Received_At__c", receivedAt)
-            .put("Created_From__c", "SMS")
-            .put("Device__c", GlobalConstants.DEVICE_NAME)
-            .put("External_Id__c", messageExternalID)
+            .put("External_Id__c", externalIdString)
+            .put("Received_At__c", receivedAtString)
             .put("Content__c", formattedContent)
             .put("Original_Content__c", message.content)
+            .put("Sender__c", message.sender)
+            .put("Created_From__c", "SMS")
+            .put("Device__c", GlobalConstants.DEVICE_NAME)
             .toString();
         Log.d(TAG, "the payload is=>" + payload);
         return payload;
     }
 
     private static String checkAndConvertToSFDateTimeFormat(String receivedAt) {
-        if (isNumeric(receivedAt)) {
+        boolean timeInMilis = (receivedAt != null && receivedAt.matches("\\d+"));
+        if (timeInMilis) {
             try {
                 // Convert numeric input (milliseconds since 1970) to a Date object
                 long millis = Long.parseLong(receivedAt);
-                Date date = new Date(millis);
+                Date receivedAtDateTime = new Date(millis);
 
                 // Format the Date object to Salesforce-compatible DateTime string
-                SimpleDateFormat sfFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                sfFormat.setTimeZone(java.util.TimeZone.getTimeZone("UTC")); // Ensure UTC format
-                return sfFormat.format(date);
-            } catch (NumberFormatException e) {
-                // Handle large or invalid numbers gracefully
-                return "";
+                SimpleDateFormat sfDateTimeFormat = new SimpleDateFormat(GlobalConstants.SF_DATETIME_FORMAT);
+                sfDateTimeFormat.setTimeZone(java.util.TimeZone.getTimeZone("Asia/Kolkata")); // Ensure UTC format
+                return sfDateTimeFormat.format(receivedAtDateTime);
+            }
+            catch (NumberFormatException e) {
+                Log.e(TAG, "Exception occurred while converting to date from milis => " + e.getStackTrace().toString());
+                return e.getStackTrace().toString();
             }
         }
         else{
-            return receivedAt;
+            return receivedAt + ""; // return as new String
         }
     }
-    private static boolean isNumeric(String str) {
-        return str != null && str.matches("\\d+");
-    }
 
+    /**
+     * @param receivedAt
+     * @return
+     */
     private static String generateExternalId(String receivedAt) {
         return receivedAt.replaceAll(":", "")
                 .replaceAll(" ", "")

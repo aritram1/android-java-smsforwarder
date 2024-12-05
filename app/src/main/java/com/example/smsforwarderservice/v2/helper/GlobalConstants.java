@@ -5,6 +5,8 @@ import java.util.List;
 
 public class GlobalConstants {
     public static final String APP_NAME = "SMSForwarder";
+    public static final String SF_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+
     public static final String DEVICE_NAME = Build.MANUFACTURER + " " + Build.MODEL;
     public static final String AUTH_ENDPOINT = "https://login.salesforce.com/services/oauth2/authorize";
     public static final String TOKEN_ENDPOINT = "https://login.salesforce.com/services/oauth2/token";

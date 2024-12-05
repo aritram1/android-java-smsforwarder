@@ -16,7 +16,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -129,17 +131,43 @@ public class SFUtil {
         Log.d(TAG, "Inside buildPayload method !!");
         String formattedContent = message.content.replaceAll("\\r?\\n", " ");
         String messageExternalID = generateExternalId(message.receivedAt);
+        String receivedAt = checkAndConvertToSFDateTimeFormat(message.receivedAt);
         Log.d(TAG, "messageExternalID=>" + messageExternalID);
         String payload = new JSONObject()
             .put("Sender__c", message.sender)
-            .put("Received_At__c", message.receivedAt)
+            .put("Received_At__c", receivedAt)
             .put("Created_From__c", "SMS")
             .put("Device__c", GlobalConstants.DEVICE_NAME)
             .put("External_Id__c", messageExternalID)
             .put("Content__c", formattedContent)
+            .put("Original_Content__c", message.content)
             .toString();
         Log.d(TAG, "the payload is=>" + payload);
         return payload;
+    }
+
+    private static String checkAndConvertToSFDateTimeFormat(String receivedAt) {
+        if (isNumeric(receivedAt)) {
+            try {
+                // Convert numeric input (milliseconds since 1970) to a Date object
+                long millis = Long.parseLong(receivedAt);
+                Date date = new Date(millis);
+
+                // Format the Date object to Salesforce-compatible DateTime string
+                SimpleDateFormat sfFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                sfFormat.setTimeZone(java.util.TimeZone.getTimeZone("UTC")); // Ensure UTC format
+                return sfFormat.format(date);
+            } catch (NumberFormatException e) {
+                // Handle large or invalid numbers gracefully
+                return "";
+            }
+        }
+        else{
+            return receivedAt;
+        }
+    }
+    private static boolean isNumeric(String str) {
+        return str != null && str.matches("\\d+");
     }
 
     private static String generateExternalId(String receivedAt) {

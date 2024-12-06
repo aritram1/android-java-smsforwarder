@@ -159,8 +159,8 @@ public class SFUtil {
             .put("Content__c", formattedContent)
             .put("Original_Content__c", message.content)
             .put("Sender__c", message.sender)
-            .put("Created_From__c", "SMS")
             .put("Device__c", GlobalConstants.DEVICE_NAME)
+            .put("Created_From__c", "SMS")
             .toString();
         Log.d(TAG, "the payload is=>" + payload);
         return payload;
